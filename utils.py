@@ -88,3 +88,20 @@ def join_with_fixed_position(audio_paths, split_time = 60 * 1000):
         })
 
     return output_audio, data_mapping
+
+"""
+單個檔案中，每個說話者個隨機選取檔案
+"""
+def files_all_speaker_random_audio(filepath, pick_times = 1):
+    mapping = statistics_speakers(filepath)
+    file_names = mapping.keys()
+    base_folder = os.path.dirname(filepath)
+
+    select_paths = []
+
+    for name in file_names:
+        for speaker_id in range(mapping[name] + 1):
+            select_file_name = "*s-*s-SPEAKER_" + str(speaker_id).zfill(2) + "-" + name
+            select_paths.extend(random_file(os.path.join(base_folder, select_file_name), pick_times))
+
+    return select_paths
