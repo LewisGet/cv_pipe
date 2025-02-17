@@ -74,11 +74,17 @@ def join_with_fixed_position(audio_paths, split_time = 60 * 1000):
     data_mapping = []
     join_index = 0
 
-    for path in glob.glob(audio_paths):
+    file_paths = audio_paths
+
+    if isinstance(audio_paths, str):
+        file_paths = glob.glob(audio_paths)
+
+    for path in file_paths:
         start_time, end_time, speaker_id, filename = filename_valuable(os.path.basename(path))
         total_time = end_time - start_time
         join_audio = load_audio(path)
         join_time = join_index * split_time
+        join_index += 1
 
         output_audio = output_audio.overlay(join_audio, position=join_time)
         data_mapping.append({
