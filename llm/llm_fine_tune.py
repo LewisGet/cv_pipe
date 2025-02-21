@@ -6,7 +6,7 @@ from huggingface_hub import login
 from peft import LoraConfig, TaskType, get_peft_model
 
 import config
-import llm_fine_tune_data
+from llm import llm_fine_tune_data
 
 model_id = "hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4"
 quantization_config = AwqConfig(
