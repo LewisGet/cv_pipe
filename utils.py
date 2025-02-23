@@ -1,5 +1,9 @@
+import torch
+import torchaudio
+
 from pydub import AudioSegment
 import numpy as np
+import pickle
 import glob
 import random
 import re
@@ -111,3 +115,50 @@ def files_all_speaker_random_audio(filepath, pick_times = 1):
             select_paths.extend(random_file(os.path.join(base_folder, select_file_name), pick_times))
 
     return select_paths
+
+def convert_audio_format():
+    for path in glob.glob(os.path.join(config.raw_audio_path, "*.wav")):
+        filename = os.path.basename(path).split(".")[0]
+        load_audio(path).export(os.path.join(config.train_format_audio_path, filename + ".wav"), format="wav")
+
+def get_mels(paths):
+    vocoder = torch.hub.load('LewisGet/melgan-neurips', 'load_melgan')
+
+    mels = []
+
+    for path in paths:
+        _file = open(path, "rb")
+        wav, sample_rate = torchaudio.load(path)
+        _file.close()
+
+        mel = vocoder(wav)
+
+        if mel.shape[-1] < config.fft_frames:
+            continue
+
+        mel_join = np.concatenate(mels, axis=1)
+        mel_mean = np.mean(mel_join, axis=1, keepdims=True)
+        mel_std = np.std(mel_join, axis=1, keepdims=True) + 1e-9
+
+        mel_normalized = []
+
+        for mel in mels:
+            mel_normalized.append((mel - mel_mean) / mel_std)
+
+        return mel_normalized, mel_mean, mel_std
+
+def save_mels(prefix_name, mels, mean, std):
+    f = open(os.path.join(config.fft_preprocess_path, prefix_name + "_mels.pkl"), "wb")
+    pickle.dump(mels, f)
+    f.close()
+    np.save(os.path.join(config.fft_preprocess_path, prefix_name + "_mean.npy"), mean)
+    np.save(os.path.join(config.fft_preprocess_path, prefix_name + "_std.npy"), std)
+
+def load_mels(prefix_name):
+    f = open(os.path.join(config.fft_preprocess_path, prefix_name + "_mels.pkl"), "rb")
+    mels = pickle.load(f)
+    f.close()
+    mean = np.load(os.path.join(config.fft_preprocess_path, prefix_name + "_mean.npy"))
+    std = np.load(os.path.join(config.fft_preprocess_path, prefix_name + "_std.npy"))
+
+    return mels, mean, std
