@@ -162,3 +162,10 @@ def load_mels(prefix_name):
     std = np.load(os.path.join(config.fft_preprocess_path, prefix_name + "_std.npy"))
 
     return mels, mean, std
+
+def fixed_wav_length(wav, size=config.fft_frames * 250):
+    wav = wav[:, :size]
+    if wav.shape[1] < size:
+        wav = torch.nn.functional.pad(wav, (0, size - wav.shape[1]))
+
+    return wav
