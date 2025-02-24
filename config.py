@@ -2,7 +2,7 @@ import os
 
 
 def create_directory(*path):
-    _path = os.path.join(path)
+    _path = os.path.join(*path)
 
     if not os.path.exists(_path):
         os.makedirs(_path)
@@ -26,3 +26,4 @@ fine_tune_path = create_directory(llm_cache, "fine-AWQ-INT4")
 
 auto_audio_classify_path = create_directory(".", "unlabeled-classify")
 label_audio_classify_path = create_directory(".", "classify")
+label_audio_classify_model = create_directory(".", "model", "classify")
