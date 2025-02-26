@@ -27,3 +27,10 @@ fine_tune_path = create_directory(llm_cache, "fine-AWQ-INT4")
 auto_audio_classify_path = create_directory(".", "unlabeled-classify")
 label_audio_classify_path = create_directory(".", "classify")
 label_audio_classify_model = create_directory(".", "model", "classify")
+
+wav2vec2_model_path = create_directory(".", "model", "wav2vec2-large-robust-12-ft-emotion-msp-dim")
+
+labels = ['lewis', 'kevin', 'kit', 'gold', 'else', 'mixed', 'noise']
+
+id2label = {i: v for i, v in enumerate(labels)}
+label2id = {v: i for i, v in enumerate(labels)}
