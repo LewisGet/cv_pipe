@@ -44,5 +44,5 @@ class TrainDataset:
             self.train_data.append(input_values)
 
     def load_label_paths(self, dict_paths):
-        for label, paths in enumerate(dict_paths):
+        for label, paths in config.items():
             self.add(paths, label)
