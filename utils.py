@@ -127,9 +127,7 @@ def get_mels(paths):
     mels = []
 
     for path in paths:
-        _file = open(path, "rb")
         wav, sample_rate = torchaudio.load(path)
-        _file.close()
 
         mel = vocoder(wav)
 
