@@ -1,6 +1,4 @@
 from transformers import AutoModelForAudioClassification
-from transformers import AutoFeatureExtractor
-import numpy as np
 import torch
 import torchaudio
 
