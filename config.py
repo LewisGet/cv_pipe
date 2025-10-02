@@ -40,3 +40,6 @@ labels = ['lewis', 'kevin', 'kit', 'gold', 'else', 'mixed', 'noise']
 
 id2label = {i: v for i, v in enumerate(labels)}
 label2id = {v: i for i, v in enumerate(labels)}
+
+def format_clip_name(filename, start, end):
+    return f"_clip_{filename}_s_{start}_e_{end}.wav"

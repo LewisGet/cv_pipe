@@ -245,7 +245,7 @@ def split_audio_clips(dicts):
         audio = AudioSegment.from_file(org_file)
 
         _start_time, _stop_time = clip_section['s'], clip_section['e']
-        clip_filename = f"_clip_{filename}_s_{_start_time}_e_{_stop_time}.wav"
+        clip_filename = config.format_clip_name(filename, _start_time, _stop_time)
 
         org_clip = audio[_start_time:_stop_time]
         org_clip.export(os.path.join(config.raw_audio_path, clip_filename), format="wav")

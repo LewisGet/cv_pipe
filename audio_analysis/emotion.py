@@ -68,7 +68,7 @@ def get_pad_dicts(dicts):
 
     for clip_section in dicts:
         filename = os.path.basename(i)
-        clip_filename = f"_clip_{filename}_s_{_start_time}_e_{_stop_time}.wav"
+        clip_filename = config.format_clip_name(filename, clip_section['s'], clip_section['e'])
         format_file = os.path.join(config.raw_audio_path, clip_filename)
 
         wav, rate = torchaudio.load(path16k)
