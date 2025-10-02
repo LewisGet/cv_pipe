@@ -263,3 +263,19 @@ def classify_overlap_dicts(speaker_dicts):
     final_overlapping_list = [item for sublist in overlapping_groups for item in sublist]
 
     return final_overlapping_list, non_overlapping_intervals
+
+def split_audio_clips(dicts):
+    for clip_section in dicts:
+        filename = os.path.basename(i)
+        org_file = os.path.join(config.raw_audio_path, filename)
+
+        audio = AudioSegment.from_file(org_file)
+
+        _start_time, _stop_time = clip_section['s'], clip_section['e']
+        clip_filename = f"_clip_{filename}_s_{_start_time}_e_{_stop_time}.wav"
+
+        org_clip = audio[_start_time:_stop_time]
+        org_clip.export(os.path.join(config.raw_audio_path, clip_filename), format="wav")
+
+        format_clip = format_feed_audio(org_clip)
+        format_clip.export(os.path.join(config.train_format_audio_path, clip_filename), format="wav")
