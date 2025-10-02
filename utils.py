@@ -4,6 +4,7 @@ import torchaudio
 from pydub import AudioSegment
 import numpy as np
 import pickle
+import json
 import glob
 import random
 import re
@@ -167,3 +168,20 @@ def fixed_wav_length(wav, size=config.fft_frames * 250):
         wav = torch.nn.functional.pad(wav, (0, size - wav.shape[1]))
 
     return wav
+
+def save_json(data, path):
+    try:
+        os.makedirs(os.path.dirname(path), exist_ok=True)
+        with open(path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=4)
+    except Exception as e:
+        raise e
+
+def load_json(path):
+    if os.path.exists(path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except Exception as e:
+            raise e
+    return None
