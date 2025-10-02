@@ -13,6 +13,7 @@ sample_rate = 16000
 channels = 1
 sample_width = 2
 audio_float_size = 8 * sample_width
+max_audio_length_ms = 1000 * 60 * 15
 
 raw_audio_path = create_directory(".", "raw")
 train_format_audio_path = create_directory(".", "format")

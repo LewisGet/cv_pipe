@@ -13,14 +13,15 @@ import os
 import config
 
 
-def load_audio(filepath):
-    audio = AudioSegment.from_file(filepath)
-
+def format_feed_audio(audio):
     audio = audio.set_frame_rate(config.sample_rate)
     audio = audio.set_channels(config.channels)
     audio = audio.set_sample_width(config.sample_width)
 
     return audio
+
+def load_audio(filepath):
+    return format_feed_audio(AudioSegment.from_file(filepath))
 
 def random_file(path, times = 1):
     paths = list(glob.glob(path))
@@ -185,3 +186,21 @@ def load_json(path):
         except Exception as e:
             raise e
     return None
+
+def split_long_wav(path):
+    audio = AudioSegment.from_file(path)
+    filename = os.path.basename(i)
+    split_parts = 0
+
+    for start in range(0, len(audio), config.max_audio_length_ms):
+        end = start + config.max_audio_length_ms
+
+        org_clip = audio[start:end]
+        feed_clip = format_feed_audio(audio[start:end])
+
+        split_name = f"__split_{filename}_part_{split_parts}.wav"
+
+        org_clip.export(os.path.join(config.raw_audio_path, split_name), format="wav")
+        feed_clip.export(os.path.join(config.train_format_audio_path, split_name), format="wav")
+
+        split_parts += 1
