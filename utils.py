@@ -231,3 +231,35 @@ def get_speaker_dict(path, return_without_save=False):
         save_json(split_datas, os.path.join(config.audio_analysis_save_path, f"analysis_{filename}_speaker.json"))
 
     return split_datas
+
+def classify_overlap_dicts(speaker_dicts):
+    sorted_intervals = sorted(speaker_dicts, key=lambda x: x['s'])
+
+    overlapping_groups = []
+    non_overlapping_intervals = []
+
+    current_group = [sorted_intervals[0]]
+
+    for i in range(1, len(sorted_intervals)):
+        next_interval = sorted_intervals[i]
+        current_group_end_time = current_group[-1]['e']
+
+        if next_interval['s'] < current_group_end_time:
+             current_group.append(next_interval)
+        else:
+            if len(current_group) == 1:
+                non_overlapping_intervals.extend(current_group)
+            else:
+                overlapping_groups.append(current_group)
+
+            current_group = [next_interval]
+
+    if current_group:
+        if len(current_group) == 1:
+            non_overlapping_intervals.extend(current_group)
+        else:
+            overlapping_groups.append(current_group)
+
+    final_overlapping_list = [item for sublist in overlapping_groups for item in sublist]
+
+    return final_overlapping_list, non_overlapping_intervals
