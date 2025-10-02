@@ -1,0 +1,84 @@
+from pyannote.audio import Pipeline
+import config
+import untils
+
+import numpy as np
+import torch
+import torch.nn as nn
+import torchaudio
+from transformers import Wav2Vec2Processor
+from transformers.models.wav2vec2.modeling_wav2vec2 import (
+    Wav2Vec2Model,
+    Wav2Vec2PreTrainedModel,
+)
+
+
+class RegressionHead(nn.Module):
+    r"""Classification head."""
+
+    def __init__(self, config):
+
+        super().__init__()
+
+        self.dense = nn.Linear(config.hidden_size, config.hidden_size)
+        self.dropout = nn.Dropout(config.final_dropout)
+        self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
+
+    def forward(self, features, **kwargs):
+
+        x = features
+        x = self.dropout(x)
+        x = self.dense(x)
+        x = torch.tanh(x)
+        x = self.dropout(x)
+        x = self.out_proj(x)
+
+        return x
+
+
+class EmotionModel(Wav2Vec2PreTrainedModel):
+    r"""Speech emotion classifier."""
+
+    def __init__(self, config):
+
+        super().__init__(config)
+
+        self.config = config
+        self.wav2vec2 = Wav2Vec2Model(config)
+        self.classifier = RegressionHead(config)
+        self.init_weights()
+
+    def forward(
+            self,
+            input_values,
+    ):
+
+        outputs = self.wav2vec2(input_values)
+        hidden_states = outputs[0]
+        hidden_states = torch.mean(hidden_states, dim=1)
+        logits = self.classifier(hidden_states)
+
+        #  Arousal, dominance, valence
+        return logits
+
+model = EmotionModel.from_pretrained(model_name).to(torch.device("cuda"))
+
+def get_pad_dicts(dicts):
+    sources = list()
+
+    for clip_section in dicts:
+        filename = os.path.basename(i)
+        clip_filename = f"_clip_{filename}_s_{_start_time}_e_{_stop_time}.wav"
+        format_file = os.path.join(config.raw_audio_path, clip_filename)
+
+        wav, rate = torchaudio.load(path16k)
+
+        _, pad = model(wav)
+
+        pad = pad.tolist()[0]
+        clip_section['arousal'], clip_section['dominance'], clip_section['valence'] = pad
+        sources.append(clip_section)
+
+    untils.save_json(source, os.path.join(audio_analysis_save_path, "pad_source.json"))
+
+    return sources

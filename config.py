@@ -32,6 +32,7 @@ label_audio_classify_path = create_directory(".", "classify")
 label_audio_classify_model = create_directory(".", "model", "classify")
 
 multiple_speaker_diarization_model = create_directory(".", "model", "speaker-diarization-3.1")
+emotion_model_path = create_directory(".", "model", "wav2vec2-large-robust-12-ft-emotion-msp-dim")
 
 wav2vec2_model_path = create_directory(".", "model", "wav2vec2-large-robust-12-ft-emotion-msp-dim")
 
