@@ -10,6 +10,22 @@ this project provide tools
    2. file split
    3. audio to mel transform
 
+# demo
+
+## split audio
+
+```py
+import config
+import utils
+import glob
+
+# split details in config.py
+# > `max_audio_length_ms`, `format_long_audio_split_name`
+# > `raw_audio_path`, `train_format_audio_path`
+for i in glob.glob("./public_voice/*"):
+    utils.split_long_wav(i)
+```
+
 # Project initialises
 
 1. update valuable `label` in `config.py`, you can modify the files default path if you want to.
