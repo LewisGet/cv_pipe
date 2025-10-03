@@ -189,7 +189,7 @@ def load_json(path):
 
 def split_long_wav(path):
     audio = AudioSegment.from_file(path)
-    filename = os.path.basename(i)
+    filename = os.path.basename(path)
     split_parts = 0
 
     for start in range(0, len(audio), config.max_audio_length_ms):
@@ -198,7 +198,7 @@ def split_long_wav(path):
         org_clip = audio[start:end]
         feed_clip = format_feed_audio(audio[start:end])
 
-        split_name = f"__split_{filename}_part_{split_parts}.wav"
+        split_name = config.format_long_audio_split_name(filename, split_parts)
 
         org_clip.export(os.path.join(config.raw_audio_path, split_name), format="wav")
         feed_clip.export(os.path.join(config.train_format_audio_path, split_name), format="wav")
