@@ -1,6 +1,6 @@
 from pyannote.audio import Pipeline
 import config
-import untils
+import utils
 
 import numpy as np
 import torch
@@ -11,6 +11,8 @@ from transformers.models.wav2vec2.modeling_wav2vec2 import (
     Wav2Vec2Model,
     Wav2Vec2PreTrainedModel,
 )
+
+import os
 
 
 class RegressionHead(nn.Module):
@@ -61,23 +63,28 @@ class EmotionModel(Wav2Vec2PreTrainedModel):
         #  Arousal, dominance, valence
         return logits
 
-model = EmotionModel.from_pretrained(model_name).to(torch.device("cuda"))
+model = EmotionModel.from_pretrained(config.emotion_model_path).to(torch.device("cuda"))
 
 def get_pad_dicts(dicts):
     sources = list()
 
     for clip_section in dicts:
-        filename = os.path.basename(i)
+        filename = os.path.basename(clip_section['path'])
         clip_filename = config.format_clip_name(filename, clip_section['s'], clip_section['e'])
         format_file = os.path.join(config.raw_audio_path, clip_filename)
 
-        wav, rate = torchaudio.load(path16k)
+        with torch.no_grad():
+            wav, rate = torchaudio.load(format_file)
+            wav = wav.to(torch.device("cuda"))
 
-        _, pad = model(wav)
+            _, pad = model(wav)
+            _pad = pad.cpu().detach().tolist()
 
-        pad = pad.tolist()[0]
-        clip_section['arousal'], clip_section['dominance'], clip_section['valence'] = pad
+        clip_section['arousal'], clip_section['dominance'], clip_section['valence'] = _pad
         sources.append(clip_section)
+
+        del wav, rate, pad, _pad, _
+        torch.cuda.empty_cache()
 
     untils.save_json(source, os.path.join(audio_analysis_save_path, "pad_source.json"))
 
