@@ -86,6 +86,6 @@ def get_pad_dicts(dicts):
         del wav, rate, pad, _pad, _
         torch.cuda.empty_cache()
 
-    untils.save_json(source, os.path.join(audio_analysis_save_path, "pad_source.json"))
+    utils.save_json(sources, os.path.join(config.audio_analysis_save_path, "pad_source.json"))
 
     return sources
