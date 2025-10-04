@@ -42,6 +42,33 @@ for i in glob.glob(os.path.join(config.train_format_audio_path, "__split*")):
     multiple_speaker.get_speaker_dict(i)
 ```
 
+## split single speaker and mutilpe
+
+```py
+single, overlap = utils.classify_overlap_dicts(dicts)
+```
+
+## join all and split
+
+```py
+import config
+import utils
+import glob
+import os
+
+single_dicts, overlap_dicts = list(), list()
+
+for i in glob.glob(os.path.join(config.audio_analysis_save_path, "analysis_*split*.json")):
+    dicts = utils.load_json(i)
+    if len(dicts) > 0:
+        single, overlap = utils.classify_overlap_dicts(dicts)
+        single_dicts.extend(single), overlap_dicts.extend(overlap)
+
+utils.save_json(single_dicts, os.path.join(config.audio_analysis_save_path, "all_analysis_single.json"))
+utils.save_json(overlap_dicts, os.path.join(config.audio_analysis_save_path, "all_analysis_overlap.json"))
+```
+
+
 # Project initialises
 
 1. update valuable `label` in `config.py`, you can modify the files default path if you want to.
