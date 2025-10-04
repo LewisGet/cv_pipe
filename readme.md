@@ -68,6 +68,31 @@ utils.save_json(single_dicts, os.path.join(config.audio_analysis_save_path, "all
 utils.save_json(overlap_dicts, os.path.join(config.audio_analysis_save_path, "all_analysis_overlap.json"))
 ```
 
+## split voice clips by dicts
+
+```py
+import config
+import utils
+import os
+
+dicts = utils.load_json(os.path.join(config.audio_analysis_save_path, "all_analysis_single.json"))
+
+utils.split_audio_clips(dicts)
+```
+
+## emotion analysis
+
+```py
+from audio_analysis import emotion
+import config
+import utils
+import os
+
+dicts = utils.load_json(os.path.join(config.audio_analysis_save_path, "all_analysis_single.json"))
+
+pad_dicts = emotion.get_pad_dicts(dicts)
+```
+
 
 # Project initialises
 
