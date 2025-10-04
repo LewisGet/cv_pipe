@@ -26,6 +26,19 @@ for i in glob.glob("./public_voice/*"):
     utils.split_long_wav(i)
 ```
 
+## split multiple speaker
+
+```py
+from audio_analysis import multiple_speaker
+import config
+import utils
+import glob
+import os
+
+for i in glob.glob(os.path.join(config.train_format_audio_path, "__split*")):
+    multiple_speaker.get_speaker_dict(i)
+```
+
 # Project initialises
 
 1. update valuable `label` in `config.py`, you can modify the files default path if you want to.
