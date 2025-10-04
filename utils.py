@@ -239,7 +239,7 @@ def classify_overlap_dicts(speaker_dicts):
 
 def split_audio_clips(dicts):
     for clip_section in dicts:
-        filename = os.path.basename(i)
+        filename = os.path.basename(clip_section['path'])
         org_file = os.path.join(config.raw_audio_path, filename)
 
         audio = AudioSegment.from_file(org_file)
