@@ -9,6 +9,9 @@ this project provide tools
    1. file convert
    2. file split
    3. audio to mel transform
+5. audio analysis
+   1. multiple speaker split
+   2. voice pad score
 
 # demo
 
