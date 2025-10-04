@@ -31,7 +31,7 @@ auto_audio_classify_path = create_directory(".", "unlabeled-classify")
 label_audio_classify_path = create_directory(".", "classify")
 label_audio_classify_model = create_directory(".", "model", "classify")
 
-multiple_speaker_diarization_model = create_directory(".", "model", "speaker-diarization-3.1")
+multiple_speaker_diarization_model = create_directory(".", "model", "pyannote/speaker-diarization-3.1")
 emotion_model_path = create_directory(".", "model", "wav2vec2-large-robust-12-ft-emotion-msp-dim")
 
 wav2vec2_model_path = create_directory(".", "model", "wav2vec2-large-robust-12-ft-emotion-msp-dim")
@@ -40,6 +40,9 @@ labels = ['lewis', 'kevin', 'kit', 'gold', 'else', 'mixed', 'noise']
 
 id2label = {i: v for i, v in enumerate(labels)}
 label2id = {v: i for i, v in enumerate(labels)}
+
+def format_long_audio_split_name(filename, parts):
+    return f"__split_{filename}_part_{parts}.wav"
 
 def format_clip_name(filename, start, end):
     return f"_clip_{filename}_s_{start}_e_{end}.wav"
